@@ -1,4 +1,5 @@
 import math
+import sys
 
 def dist(p1, p2):
     return math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
@@ -59,3 +60,38 @@ def closest_rec(points):
 def closest(points):
     points.sort()
     return closest_rec(points)
+
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python closest_pair.py <file path>")
+        return
+
+    file_path = sys.argv[1]
+    points = []
+
+    try:
+        with open(file_path, "r") as file:
+            lines = [line.strip() for line in file if line.strip()]
+
+        if not lines:
+            raise ValueError("File is empty!")
+
+        n = int(lines[0])
+        for line in lines[1:]:
+            coords = line.split()
+            if len(coords) != 2:
+                raise ValueError(f"Invalid coordinate line: '{line}'")
+            points.append((float(coords[0]), float(coords[1])))
+
+        if len(points) != n or len(points) < 2:
+            raise ValueError(f"Expected {n} points. Got {len(points)}!")
+
+        min_dist, best = closest(points)
+        print(f"Closest pair: {best}")
+        print(f"Minimum distance: {min_dist}")
+    except FileNotFoundError:
+        print(f"File path not found: {file_path}")
+
+if __name__ == "__main__":
+    main()
